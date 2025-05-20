@@ -1,10 +1,26 @@
 import { Errors } from "../../Error/error.ts";
 import { ProductModel } from "../model/products-model.ts";
-import type { productType } from "../types/types.ts";
+import type { ProductsQuery, productType } from "../types/types.ts";
 
-export const handleGetProducts = async () => {
+export const handleGetProducts = async ({
+  filter = {},
+  sort = "-createdAt",
+  page = 1,
+  limit = 20,
+  fields,
+}: ProductsQuery) => {
   try {
-    const products = await ProductModel.find().lean().sort({ createdAt: -1 });
+    const skip = (page - 1) * limit;
+    const query = await ProductModel.find(filter)
+      .sort(sort)
+      .skip(skip)
+      .limit(limit)
+      .lean();
+
+    if (fields) {
+      query.select(fields);
+    }
+    const products = await query;
     return products;
   } catch (error) {
     throw error;

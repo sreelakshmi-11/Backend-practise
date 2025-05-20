@@ -3,3 +3,11 @@ export type productType = {
   price: string;
   category: string;
 };
+
+export interface ProductsQuery {
+  filter: Record<string, any>;
+  sort?: string;
+  page?: number;
+  limit?: number;
+  fields?: number;
+}
